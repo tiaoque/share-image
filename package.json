@@ -1,0 +1,25 @@
+{
+  "name": "nodejs-express-upload-file-postgresql",
+  "version": "1.0.0",
+  "description": "Building a Node.js/Express RestAPIs that upload/download files to PostgreSQL database using Multer middleware, Sequelize ORM",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Node.js",
+    "Express",
+    "PostgreSQL",
+    "Multer",
+    "Sequelize"
+  ],
+  "author": "JavaSampleApproach.com",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "multer": "^1.3.0",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.37.7"
+  }
+}
