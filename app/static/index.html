@@ -1,26 +1,58 @@
 <head></head>
 <body>
 <script>
+function upload(blob) {
+    var formData = new FormData()
+    formData.append('file', blob)
+    fetch('http://localhost:8080/api/file/upload', { method: 'POST', body: formData })
+}
  function fileChange(e) { 
     let evt = e || window.event; 
     let file = evt.target.files[0]; 
     let reader = new FileReader(); 
     let rs = reader.readAsArrayBuffer(file); 
     let blob = null; 
-    reader.onload = (e) => { if (typeof e.target.result === 'object') { 
-        blob = new Blob([e.target.result]) 
+    reader.onload = (e) => { 
+        debugger
+        console.log(file)
+        if (typeof e.target.result === 'object') { 
+            blob = new Blob([e.target.result], {
+                name: file.name,
+                type: file.type
+            }) 
         } else { 
-        blob = e.target.result
-    } 
-    upload(blob)
-    console.log(Object.prototype.toString.call(blob)); }
-
+            blob = e.target.result
+        } 
+        upload(blob)
+        console.log(Object.prototype.toString.call(blob)); 
     }
-  function upload(blob) {
-      var formData = new FormData()
-      formData.append('file', blob)
-      fetch('http://localhost:8080/api/file/upload', {method: 'POST',body:formData})
-  }
+}
+    function preView(url) {
+        let reader = new FileReader();
+
+        getImageBlob(url, function (blob) {
+            reader.readAsDataURL(blob);
+        });
+
+        reader.onload = function (e) {
+            var img = document.createElement("img");
+            img.src = e.target.result;
+            document.body.appendChild(img);
+        }
+    }
+    //获取图片的Blob值
+    function getImageBlob(url, cb) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", url, true);
+        xhr.responseType = "blob";
+        xhr.onload = function () {
+            if (this.status == 200) {
+                if (cb) cb(this.response);
+            }
+        };
+        xhr.send();
+    }
+    preView('http://localhost:8080/api/file/4')
 </script>
     <input type='file' onchange="fileChange()" ></input>
     <button class='form-button'></button>
