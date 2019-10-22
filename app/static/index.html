@@ -53,7 +53,37 @@ function upload(blob) {
         };
         xhr.send();
     }
-    preView('http://localhost:8080/api/file/1')
+        var forceDownload = function (blob, filename) {
+            var a = document.createElement('a');
+            a.download = filename;
+            a.href = blob;
+            debugger
+            alert(a.outerHTML)
+            document.body.appendChild(a)
+            a.click();
+        }
+
+        // Current blob size limit is around 500MB for browsers
+        var downloadResource = function (url, filename) {
+            alert('xx')
+            if (!filename) filename = url.split('\\').pop().split('/').pop();
+            fetch(url, {
+                headers: new Headers({
+                    'Origin': location.origin
+                }),
+                mode: 'cors'
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    alert('xxxxx')
+                    let blobUrl = window.URL.createObjectURL(blob);
+                    alert(blobUrl)
+                    forceDownload(blobUrl, filename);
+                })
+                .catch(e => console.error(e));
+        }
+        downloadResource('http://localhost:8080/api/file/1', 'test.jpg')
+        // preView('http://localhost:8080/api/file/1')
 </script>
     <input type='file' onchange="fileChange()" ></input>
     <button class='form-button'></button>
