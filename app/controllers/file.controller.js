@@ -30,9 +30,9 @@ exports.downloadFile = (req, res) => {
 		var fileContents = Buffer.from(file.data, "base64");
 		var readStream = new stream.PassThrough();
 		readStream.end(fileContents);
-		
-		res.set('Content-disposition', 'attachment; filename=' + file.name);
-		res.set('Content-Type', file.type);
+		// res.set('Content-disposition', 'attachment; filename=' + file.name);
+		// res.set('Content-Type', file.type);
+		res.attachment(file.name)
 
 		readStream.pipe(res);
 	}).catch(err => {

@@ -23,7 +23,8 @@ function upload(blob) {
         } else { 
             blob = e.target.result
         } 
-        upload(blob)
+        // upload(blob)
+        upload(file)
         console.log(Object.prototype.toString.call(blob)); 
     }
 }
@@ -52,7 +53,7 @@ function upload(blob) {
         };
         xhr.send();
     }
-    preView('http://localhost:8080/api/file/4')
+    preView('http://localhost:8080/api/file/1')
 </script>
     <input type='file' onchange="fileChange()" ></input>
     <button class='form-button'></button>

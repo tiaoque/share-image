@@ -3,7 +3,7 @@ const env = {
   username: 'postgres',
   password: 'password',
   host: 'localhost',
-  port: 54321,
+  port: 5432,
   dialect: 'postgres',
   pool: {
 	  max: 5,
