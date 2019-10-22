@@ -13,7 +13,6 @@ function upload(blob) {
     let rs = reader.readAsArrayBuffer(file); 
     let blob = null; 
     reader.onload = (e) => { 
-        debugger
         console.log(file)
         if (typeof e.target.result === 'object') { 
             blob = new Blob([e.target.result], {
@@ -57,15 +56,12 @@ function upload(blob) {
             var a = document.createElement('a');
             a.download = filename;
             a.href = blob;
-            debugger
-            alert(a.outerHTML)
             document.body.appendChild(a)
             a.click();
         }
 
         // Current blob size limit is around 500MB for browsers
         var downloadResource = function (url, filename) {
-            alert('xx')
             if (!filename) filename = url.split('\\').pop().split('/').pop();
             fetch(url, {
                 headers: new Headers({
@@ -75,9 +71,7 @@ function upload(blob) {
             })
                 .then(response => response.blob())
                 .then(blob => {
-                    alert('xxxxx')
                     let blobUrl = window.URL.createObjectURL(blob);
-                    alert(blobUrl)
                     forceDownload(blobUrl, filename);
                 })
                 .catch(e => console.error(e));
