@@ -1,11 +1,18 @@
 <head></head>
 <body>
 <script>
+let hostname = location.hostname
+let port = '8080'
+// hostname = 'localhost'
+
+// 上传
 function upload(blob) {
     var formData = new FormData()
     formData.append('file', blob)
     fetch('http://localhost:8080/api/file/upload', { method: 'POST', body: formData })
 }
+
+// 监听图片输入
  function fileChange(e) { 
     let evt = e || window.event; 
     let file = evt.target.files[0]; 
@@ -27,6 +34,7 @@ function upload(blob) {
         console.log(Object.prototype.toString.call(blob)); 
     }
 }
+    // 预览图片
     function preView(url) {
         let reader = new FileReader();
 
@@ -76,9 +84,34 @@ function upload(blob) {
                 })
                 .catch(e => console.error(e));
         }
-        downloadResource('http://localhost:8080/api/file/1', 'test.jpg')
-        // preView('http://localhost:8080/api/file/1')
+        downloadResource('http://' + hostname + ':' + port + '/api/file/1', 'test.jpg')
+        preView('http://' + hostname + ':' + port + '/api/file/1')
+        function getURL () {
+            return 'http://' + hostname + ':' + port + '/api/file/info'
+        }
+        function getPreviewUrl(fileId) {
+            preView('http://' + hostname + ':' + port + '/api/file/' + fileId)
+        }
+        function previewAll () {
+            fetch (getURL(), {
+                method: 'GET'
+            }).then((response) => {
+                return response.json()
+            }).then((response) => {
+                response.reverse().forEach(function(element) {
+                    preView(getPreviewUrl(element.id))
+                }, this);
+            })
+        }
+        previewAll()
 </script>
+<style>
+    img {
+        width: 50px;
+        height: 50px;
+        display: block;
+    }
+</style>
     <input type='file' onchange="fileChange()" ></input>
     <button class='form-button'></button>
     <script>
