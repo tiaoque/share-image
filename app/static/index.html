@@ -85,7 +85,7 @@ function upload(blob) {
                 .catch(e => console.error(e));
         }
 
-        preView('http://' + hostname + ':' + port + '/api/file/1')
+        // preView('http://' + hostname + ':' + port + '/api/file/1')
         function getURL () {
             return 'http://' + hostname + ':' + port + '/api/file/info'
         }
@@ -98,6 +98,8 @@ function upload(blob) {
             }).then((response) => {
                 return response.json()
             }).then((response) => {
+                latestId = response[response.length - 1].id
+                latestName = response[response.length - 1].name
                 response.reverse().forEach(function(element) {
                     preView(getPreviewUrl(element.id))
                 }, this);
@@ -118,7 +120,7 @@ function upload(blob) {
     <button class='form-button'>下载</button>
     <script>
     document.getElementsByClassName('form-button')[0].addEventListener('click', () => {
-        downloadResource('http://' + hostname + ':' + port + '/api/file/1', 'test.jpg')
+        downloadResource('http://' + hostname + ':' + port + '/api/file/' + latestId, latestName)
     })
     </script>
 </body>
