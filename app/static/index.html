@@ -84,7 +84,7 @@ function upload(blob) {
                 })
                 .catch(e => console.error(e));
         }
-        downloadResource('http://' + hostname + ':' + port + '/api/file/1', 'test.jpg')
+
         preView('http://' + hostname + ':' + port + '/api/file/1')
         function getURL () {
             return 'http://' + hostname + ':' + port + '/api/file/info'
@@ -113,10 +113,10 @@ function upload(blob) {
     }
 </style>
     <input type='file' onchange="fileChange()" ></input>
-    <button class='form-button'></button>
+    <button class='form-button'>下载</button>
     <script>
     document.getElementsByClassName('form-button')[0].addEventListener('click', () => {
-        
+        downloadResource('http://' + hostname + ':' + port + '/api/file/1', 'test.jpg')
     })
     </script>
 </body>
