@@ -2,8 +2,22 @@ var stream = require('stream');
 
 const db = require('../config/db.config.js');
 const File = db.files;
+const crypto = require('crypto');
 
 exports.uploadFile = (req, res) => {
+	
+	// 可任意多次调用update():
+	if (req.body.auth) {
+		const hash = crypto.createHash('md5');
+		hash.update(req.body.auth)
+		console.log(req.body.auth)
+		if(!(hash.digest('hex') === '46c1b534ac3f9b573263fd8cdf955dfa')) {
+			res.json({msg: 'Error', detail: 'auth failed'});
+			return false;
+		}
+	} else {
+		return false
+	}	
 	File.create({
 		type: req.file.mimetype,
 		name: req.file.originalname,

@@ -8,6 +8,8 @@ let port = '8080'
 // 上传
 function upload(blob) {
     var formData = new FormData()
+    let auth = document.getElementById('auth').value
+    formData.append('auth',auth)
     formData.append('file', blob)
     fetch('http://localhost:8080/api/file/upload', { method: 'POST', body: formData })
 }
@@ -20,7 +22,7 @@ function upload(blob) {
     let rs = reader.readAsArrayBuffer(file); 
     let blob = null; 
     reader.onload = (e) => { 
-        console.log(file)
+        // console.log(file)
         if (typeof e.target.result === 'object') { 
             blob = new Blob([e.target.result], {
                 name: file.name,
@@ -31,7 +33,7 @@ function upload(blob) {
         } 
         // upload(blob)
         upload(file)
-        console.log(Object.prototype.toString.call(blob)); 
+        // console.log(Object.prototype.toString.call(blob)); 
     }
 }
     // 预览图片
@@ -105,7 +107,7 @@ function upload(blob) {
                 }, this);
             })
         }
-        previewAll()
+        previewAll() // 预览图片
 </script>
 <style>
     img {
@@ -116,7 +118,15 @@ function upload(blob) {
         display: block;
     }
 </style>
-    <input type='file' onchange="fileChange()" ></input>
+    <div>
+        <label>
+            密码
+            <input type='text' id='auth'></input>
+        </label>
+    </div>
+    <div>
+        <input type='file' onchange="fileChange()" ></input>
+    </div>
     <button class='form-button'>下载</button>
     <script>
     document.getElementsByClassName('form-button')[0].addEventListener('click', () => {
