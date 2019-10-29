@@ -4,20 +4,32 @@ const db = require('../config/db.config.js');
 const File = db.files;
 const crypto = require('crypto');
 
+function isValidAuth({
+	req,
+	res
+}) {
+	const hash = crypto.createHash('md5');
+	hash.update(req.headers['x-auth-token'] || req.body && req.body.auth)
+	if (!(hash.digest('hex') === '46c1b534ac3f9b573263fd8cdf955dfa')) {
+		res.json({
+			msg: 'Error',
+			detail: 'auth failed'
+		});
+		return false;
+	} else {
+		return true
+	}
+}
+
 exports.uploadFile = (req, res) => {
 	
 	// 可任意多次调用update():
-	if (req.body.auth) {
-		const hash = crypto.createHash('md5');
-		hash.update(req.body.auth)
-		console.log(req.body.auth)
-		if(!(hash.digest('hex') === '46c1b534ac3f9b573263fd8cdf955dfa')) {
-			res.json({msg: 'Error', detail: 'auth failed'});
-			return false;
-		}
-	} else {
+	if (!isValidAuth({
+		req,
+		res
+	})){
 		return false
-	}	
+	}
 	File.create({
 		type: req.file.mimetype,
 		name: req.file.originalname,
@@ -31,6 +43,12 @@ exports.uploadFile = (req, res) => {
 }
 
 exports.listAllFiles = (req, res) => {
+	if (!isValidAuth({
+		req,
+		res
+	})){
+		return false
+	}
 	File.findAll({attributes: ['id', 'name']}).then(files => {
 	  res.json(files);
 	}).catch(err => {
@@ -40,6 +58,12 @@ exports.listAllFiles = (req, res) => {
 }
 
 exports.downloadFile = (req, res) => {
+	if (!isValidAuth({
+		req,
+		res
+	})){
+		return false
+	}
 	File.findById(req.params.id).then(file => {
 		var fileContents = Buffer.from(file.data, "base64");
 		var readStream = new stream.PassThrough();

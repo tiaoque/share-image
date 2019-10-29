@@ -2,18 +2,24 @@
 <meta http-equiv="content-type" content="text/html;charset=utf-8">
 </head>
 <body>
+    <div>
+        <label>
+            密码
+            <input type='text' id='auth'></input>
+        </label>
+    </div>
 <script>
 let hostname = location.hostname
 let port = '8080'
 // hostname = 'localhost'
-
+var headers = { 'x-auth-token': document.getElementById('auth').value }
 // 上传
 function upload(blob) {
     var formData = new FormData()
     let auth = document.getElementById('auth').value
     formData.append('auth',auth)
     formData.append('file', blob)
-    fetch('http://' + hostname + ':8080/api/file/upload', { method: 'POST', body: formData })
+    fetch('http://' + hostname + ':8080/api/file/upload', {headers, method: 'POST', body: formData })
 }
 
 // 监听图片输入
@@ -39,7 +45,7 @@ function upload(blob) {
     }
 }
     // 预览图片
-    function preView(url) {
+    function preView(url, name) {
         let reader = new FileReader();
 
         getImageBlob(url, function (blob) {
@@ -50,12 +56,19 @@ function upload(blob) {
             var img = document.createElement("img");
             img.src = e.target.result;
             document.body.appendChild(img);
+            var downloadButton = document.createElement('button')
+            downloadButton.textContent = '下载'
+            document.body.appendChild(downloadButton)
+            downloadButton.addEventListener('click', () => {
+                downloadResource(url, name)
+            })
         }
     }
     //获取图片的Blob值
     function getImageBlob(url, cb) {
         var xhr = new XMLHttpRequest();
         xhr.open("get", url, true);
+        xhr.setRequestHeader('x-auth-token', headers['x-auth-token']);
         xhr.responseType = "blob";
         xhr.onload = function () {
             if (this.status == 200) {
@@ -76,9 +89,10 @@ function upload(blob) {
         var downloadResource = function (url, filename) {
             if (!filename) filename = url.split('\\').pop().split('/').pop();
             fetch(url, {
-                headers: new Headers({
-                    'Origin': location.origin
-                }),
+                // headers: new Headers({
+                //     'Origin': location.origin
+                // }),
+                headers: headers,
                 mode: 'cors'
             })
                 .then(response => response.blob())
@@ -97,7 +111,9 @@ function upload(blob) {
             preView('http://' + hostname + ':' + port + '/api/file/' + fileId)
         }
         function previewAll () {
+            console.log(headers)
             fetch (getURL(), {
+                headers: headers,
                 method: 'GET'
             }).then((response) => {
                 return response.json()
@@ -105,7 +121,7 @@ function upload(blob) {
                 latestId = response[response.length - 1].id
                 latestName = response[response.length - 1].name
                 response.reverse().forEach(function(element) {
-                    preView(getPreviewUrl(element.id))
+                    preView(getPreviewUrl(element.id), element.name)
                 }, this);
             })
         }
@@ -121,18 +137,7 @@ function upload(blob) {
     }
 </style>
     <div>
-        <label>
-            密码
-            <input type='text' id='auth'></input>
-        </label>
-    </div>
-    <div>
         <input type='file' onchange="fileChange()" ></input>
     </div>
     <button class='form-button'>下载</button>
-    <script>
-    document.getElementsByClassName('form-button')[0].addEventListener('click', () => {
-        downloadResource('http://' + hostname + ':' + port + '/api/file/' + latestId, latestName)
-    })
-    </script>
 </body>
