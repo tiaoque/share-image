@@ -47,11 +47,9 @@ function upload(blob) {
     // 预览图片
     function preView(url, name) {
         let reader = new FileReader();
-
         getImageBlob(url, function (blob) {
             reader.readAsDataURL(blob);
         });
-
         reader.onload = function (e) {
             var img = document.createElement("img");
             img.src = e.target.result;
@@ -87,7 +85,9 @@ function upload(blob) {
 
         // Current blob size limit is around 500MB for browsers
         var downloadResource = function (url, filename) {
-            if (!filename) filename = url.split('\\').pop().split('/').pop();
+            if (!filename) {
+                filename = url.split('\\').pop().split('/').pop();
+            }
             fetch(url, {
                 // headers: new Headers({
                 //     'Origin': location.origin
@@ -97,8 +97,8 @@ function upload(blob) {
             })
                 .then(response => response.blob())
                 .then(blob => {
-                    let blobUrl = window.URL.createObjectURL(blob);
-                    forceDownload(blobUrl, filename);
+                    let blobUrl = window.URL.createObjectURL(blob)
+                    forceDownload(blobUrl, filename)
                 })
                 .catch(e => console.error(e));
         }
@@ -108,7 +108,7 @@ function upload(blob) {
             return 'http://' + hostname + ':' + port + '/api/file/info'
         }
         function getPreviewUrl(fileId) {
-            preView('http://' + hostname + ':' + port + '/api/file/' + fileId)
+            return ('http://' + hostname + ':' + port + '/api/file/' + fileId)
         }
         function previewAll () {
             console.log(headers)
@@ -139,5 +139,4 @@ function upload(blob) {
     <div>
         <input type='file' onchange="fileChange()" ></input>
     </div>
-    <button class='form-button'>下载</button>
 </body>
