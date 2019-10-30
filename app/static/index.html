@@ -12,7 +12,11 @@
 let hostname = location.hostname
 let port = '8080'
 // hostname = 'localhost'
-var headers = { 'x-auth-token': document.getElementById('auth').value }
+var headers = { 'x-auth-token': localStorage.getItem('auth') || document.getElementById('auth').value }
+document.getElementById('auth').addEventListener('change', (e) => {
+    localStorage.setItem('auth', e.target.value)
+    location.reload()
+})
 // 上传
 function upload(blob) {
     var formData = new FormData()
